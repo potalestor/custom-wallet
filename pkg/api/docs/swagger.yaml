@@ -1,0 +1,118 @@
+basePath: /api/v1
+definitions:
+  model.Wallet:
+    properties:
+      account:
+        type: number
+      id:
+        type: integer
+      name:
+        type: string
+    type: object
+info:
+  contact:
+    email: potalestor@gmail.com
+    name: '@potalestor'
+  description: Swagger API for Golang Project CUSTOM-WALLET.
+  title: CUSTOM-WALLET REST API
+  version: 0.0.1
+paths:
+  /transfers/{src_wallet}/{dst_wallet}/{amount}:
+    put:
+      description: Transfer money from one wallet to another.
+      parameters:
+      - description: source wallet name
+        in: path
+        name: src_wallet
+        required: true
+        type: string
+      - description: destination wallet name
+        in: path
+        name: dst_wallet
+        required: true
+        type: string
+      - description: amount
+        in: path
+        name: amount
+        required: true
+        type: number
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/model.Wallet'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: Transfer money from one wallet to another.
+      tags:
+      - transfers
+  /wallets/{wallet_name}:
+    post:
+      description: Create new wallet.
+      parameters:
+      - description: wallet name
+        in: path
+        name: wallet_name
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Wallet'
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: Create new wallet.
+      tags:
+      - wallets
+  /wallets/{wallet_name}/{amount}:
+    put:
+      description: Deposit money to wallet.
+      parameters:
+      - description: wallet name
+        in: path
+        name: wallet_name
+        required: true
+        type: string
+      - description: amount
+        in: path
+        name: amount
+        required: true
+        type: number
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Wallet'
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: Deposit money to wallet.
+      tags:
+      - wallets
+swagger: "2.0"

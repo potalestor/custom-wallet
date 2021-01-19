@@ -40,9 +40,9 @@ func TestUSD_String(t *testing.T) {
 		name string
 		usd  model.USD
 	}{
-		{"$12.34", model.USD(12.34)},
-		{"$1234.56", model.USD(1234.56)},
-		{"$12.00", model.USD(12)},
+		{"12.34", model.USD(12.34)},
+		{"1234.56", model.USD(1234.56)},
+		{"12.00", model.USD(12)},
 	}
 	for _, tt := range tests {
 		tt := tt
@@ -80,7 +80,7 @@ func TestUSD_Float64(t *testing.T) {
 		u    model.USD
 		want float64
 	}{
-		{"$12.34", model.USD(12.34), 12.34},
+		{"12.34", model.USD(12.34), 12.34},
 	}
 	for _, tt := range tests {
 		tt := tt

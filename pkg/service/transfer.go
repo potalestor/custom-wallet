@@ -15,24 +15,27 @@ func NewTransfer(repository repo.Repository) *Transfer {
 	return &Transfer{repository: repository}
 }
 
-func (t *Transfer) Transfer(src, dst string, amount model.USD) error {
+func (t *Transfer) Transfer(src, dst string, amount model.USD) ([]*model.Wallet, error) {
 	if err := amount.Validate(); err != nil {
-		return err
+		return nil, err
 	}
-	
+
 	ctx := context.Background()
 
 	srcWallet := model.Wallet{Name: src}
 
 	if err := t.repository.GetWalletByName(ctx, &srcWallet); err != nil {
-		return err
+		return nil, err
 	}
 
 	dstWallet := model.Wallet{Name: dst}
 
 	if err := t.repository.GetWalletByName(ctx, &dstWallet); err != nil {
-		return err
+		return nil, err
 	}
 
-	return t.repository.Transfer(ctx, &srcWallet, &dstWallet, amount)
+	return []*model.Wallet{
+		&srcWallet,
+		&dstWallet,
+	}, t.repository.Transfer(ctx, &srcWallet, &dstWallet, amount)
 }

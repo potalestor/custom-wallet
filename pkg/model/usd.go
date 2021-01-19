@@ -49,7 +49,7 @@ func (u *USD) Parse(s string) error {
 
 	*u = USD(floatUSD)
 
-	return nil
+	return u.Validate()
 }
 
 // Validate USD.

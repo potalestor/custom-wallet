@@ -17,14 +17,14 @@ APPMAIN = main.go
 SWAG_BUILD = swag
 API_HANDLERS = ./pkg/api
 API_MAIN =  api.go
-API_DOCS = ./api
+API_DOCS = ./pkg/api/docs
 SWAG_FLAGS = --parseInternal=true --parseDependency=true
 
 all: test build
 
 test:
 	@echo "Run tests $(APPNAME)"
-	$(GOTEST) ./... -v
+	$(GOTEST) ./pkg/... -v
 
 build:
 	@echo "Build application $(APPNAME)"
@@ -38,16 +38,18 @@ swag:
 	@echo "Create swagger documentation in $(API_DOCS) folder"
 	$(SWAG_BUILD) init -g $(API_MAIN) -d $(API_HANDLERS) -o $(API_DOCS) $(SWAG_FLAGS)
 
+run: 
+	@echo "Run application $(APPNAME)"
+	$(APPPATH)/$(APPNAME)
+
 depend:
-	# godoc
-	# @echo "Get and install godoc"
-	# $(GOGET) -u golang.org/x/tools/cmd/godoc
-	# swag
-	# @echo "Get and install swag"
-	# $(GOGET) -u github.com/swaggo/swag/cmd/swag
-	# gin-swagger
-	# @echo "Get and install gin-swagger"
-	# $(GOGET) -u github.com/swaggo/gin-swagger
-	# $(GOGET) -u github.com/swaggo/files
-	# go-migrate
-	export GO111MODULE=off && $(GOGET) -tags 'postgres' -u github.com/golang-migrate/migrate/cmd/migrate
+	godoc
+	@echo "Get and install godoc"
+	$(GOGET) -u golang.org/x/tools/cmd/godoc
+	swag
+	@echo "Get and install swag"
+	$(GOGET) -u github.com/swaggo/swag/cmd/swag
+	gin-swagger
+	@echo "Get and install gin-swagger"
+	$(GOGET) -u github.com/swaggo/gin-swagger
+	$(GOGET) -u github.com/swaggo/files

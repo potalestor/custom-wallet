@@ -76,6 +76,8 @@ func TestConfig_Validate(t *testing.T) {
 			Config{
 				Database{"postgres", "postgres", "wallet", "localhost", 5432},
 				Migration{true, "../../migration"},
+				Logger{},
+				Web{},
 			},
 			false},
 
@@ -83,6 +85,8 @@ func TestConfig_Validate(t *testing.T) {
 			Config{
 				Database{"", "", "", "", 0},
 				Migration{true, "../../migration"},
+				Logger{},
+				Web{},
 			},
 			true},
 
@@ -90,6 +94,8 @@ func TestConfig_Validate(t *testing.T) {
 			Config{
 				Database{"postgres", "postgres", "wallet", "localhost", 5432},
 				Migration{true, "../../mgrtn/"},
+				Logger{},
+				Web{},
 			},
 			true},
 	}
