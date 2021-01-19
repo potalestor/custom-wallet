@@ -1,0 +1,9 @@
+@startuml
+User -> (Wallet) : create
+User -> (Wallet) : deposit money
+User -> (Wallet) : report\n(deposit and withdraw by datetime)
+
+(Wallet) -> (Wallet2): transfer money\nif exist and balance > 0 
+User2 -left-> (Wallet2)
+
+@enduml

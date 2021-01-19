@@ -1,0 +1,14 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "Swagger API for Golang Project CUSTOM-WALLET.",
+        "title": "CUSTOM-WALLET REST API",
+        "contact": {
+            "name": "@potalestor",
+            "email": "potalestor@gmail.com"
+        },
+        "version": "0.0.1"
+    },
+    "basePath": "/api/v1",
+    "paths": {}
+}

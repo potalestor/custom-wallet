@@ -1,0 +1,20 @@
+run:
+linters-settings:
+  depguard:
+    tests: true
+    list-type: whitelist
+    packages:
+      - github.com/potalestor/custom-wallet/pkg/cfg
+      - github.com/potalestor/custom-wallet/pkg/model
+      - github.com/potalestor/custom-wallet/pkg/repo
+      - github.com/golang-migrate/migrate/v4/database/postgres
+      - github.com/golang-migrate/migrate/v4/source/file
+      - github.com/golang-migrate/migrate/v4
+      - github.com/lib/pq
+      - github.com/pkg/errors
+      - github.com/stretchr/testify/assert
+
+
+linters:
+  enable-all: true
+  disable:
