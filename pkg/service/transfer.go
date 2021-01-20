@@ -7,14 +7,17 @@ import (
 	"github.com/potalestor/custom-wallet/pkg/repo"
 )
 
+// Transfer service.
 type Transfer struct {
 	repository repo.Repository
 }
 
+// NewTransfer returns new instance.
 func NewTransfer(repository repo.Repository) *Transfer {
 	return &Transfer{repository: repository}
 }
 
+// Transfer use case.
 func (t *Transfer) Transfer(src, dst string, amount model.USD) ([]*model.Wallet, error) {
 	if err := amount.Validate(); err != nil {
 		return nil, err

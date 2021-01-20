@@ -10,10 +10,12 @@ import (
 	"github.com/potalestor/custom-wallet/pkg/model"
 )
 
+// Wallet handler.
 type Wallet struct {
 	wallet *app.Wallet
 }
 
+// NewWallet returns new instance.
 func NewWallet(wallet *app.Wallet) *Wallet {
 	return &Wallet{wallet: wallet}
 }
@@ -27,7 +29,7 @@ func NewWallet(wallet *app.Wallet) *Wallet {
 // @Success 200 {object} model.Wallet
 // @Failure 400 {string} string
 // @Failure 500 {string} string
-// @Router /wallets/{wallet_name} [post]
+// @Router /wallets/{wallet_name} [post].
 func (w *Wallet) Create(c *gin.Context) {
 	walletName := c.Param("wallet_name")
 	if err := validation.Validate(walletName,
@@ -59,7 +61,7 @@ func (w *Wallet) Create(c *gin.Context) {
 // @Success 200 {object} model.Wallet
 // @Failure 400 {string} string
 // @Failure 500 {string} string
-// @Router /wallets/{wallet_name}/{amount} [put]
+// @Router /wallets/{wallet_name}/{amount} [put].
 func (w *Wallet) Deposit(c *gin.Context) {
 	walletName := c.Param("wallet_name")
 	if err := validation.Validate(walletName,
@@ -70,6 +72,7 @@ func (w *Wallet) Deposit(c *gin.Context) {
 
 		return
 	}
+
 	var amount model.USD
 	if err := amount.Parse(c.Param("amount")); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})

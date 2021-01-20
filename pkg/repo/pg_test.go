@@ -33,11 +33,13 @@ func TestMain(m *testing.M) {
 	if err := migrationdb.Open(); err != nil {
 		log.Fatalf("migration does not initialize: %v\n%+v", err, config)
 	}
-	defer migrationdb.Close()
 
 	if err := migrationdb.Migrate(); err != nil {
 		log.Fatalf("migration does not perform: %v\n%+v", err, config)
 	}
+
+	migrationdb.Close()
+
 	os.Exit(m.Run())
 }
 

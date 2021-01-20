@@ -17,7 +17,8 @@ const sUSD = `^\$?([1-9]{1}[0-9]{0,2}(\,[0-9]{3})*` +
 	`|0(\.[0-9]{0,2})?|(\.[0-9]{1,2})?)$`
 
 var (
-	reUSD            = regexp.MustCompile(sUSD)
+	reUSD = regexp.MustCompile(sUSD)
+
 	ErrNegativeValue = errors.New(`the USD can't be less than zero`)
 )
 
@@ -35,7 +36,7 @@ func (e *ErrInvalidUSDFormat) Error() string {
 	return fmt.Sprintf("invalid USD format: %s. Required: $12.34 or $1,234.56", e.format)
 }
 
-// parse a string that can be a USD.
+// Parse a string that can be a USD.
 func (u *USD) Parse(s string) error {
 	rawUSD := reUSD.FindStringSubmatch(s)
 	if len(rawUSD) < 1 {

@@ -14,6 +14,8 @@ import (
 	_ "github.com/gin-gonic/gin" // for resolveAddress
 )
 
+var stopServerExpiration = 20 * time.Second
+
 // Graceful server is used for safely shutting down server.
 type Graceful struct {
 	handler http.Handler
@@ -51,7 +53,7 @@ func (s *Graceful) Run(addr ...string) error {
 	log.Printf("server is shutdowning: '%v' signal has been received", sig)
 
 	// The context is used to inform the server it has 20 seconds to finish
-	ctx, cancel := context.WithTimeout(context.Background(), 20*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), stopServerExpiration)
 	defer cancel()
 
 	return srv.Shutdown(ctx)

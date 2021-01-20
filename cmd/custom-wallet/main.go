@@ -57,7 +57,6 @@ var (
 			).Run(config.Web.Adddress); err != nil {
 				log.Fatalf("web-server does not initialize: %v\n%+v", err, config)
 			}
-
 		},
 	}
 )

@@ -1,20 +1,21 @@
-package cfg
+package cfg_test
 
 import (
 	"testing"
 
+	"github.com/potalestor/custom-wallet/pkg/cfg"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestDatabase_Validate(t *testing.T) {
 	tests := []struct {
 		name    string
-		db      Database
+		db      cfg.Database
 		wantErr bool
 	}{
-		{"correct", Database{"postgres", "postgres", "wallet", "localhost", 5432}, false},
-		{"correct", Database{"postgres", "postgres", "", "localhost", 5432}, false},
-		{"invalid", Database{"", "", "", "", 0}, true},
+		{"correct", cfg.Database{"postgres", "postgres", "wallet", "localhost", 5432}, false},
+		{"correct", cfg.Database{"postgres", "postgres", "", "localhost", 5432}, false},
+		{"invalid", cfg.Database{"", "", "", "", 0}, true},
 	}
 	for _, tt := range tests {
 		tt := tt
@@ -32,26 +33,26 @@ func TestDatabase_Validate(t *testing.T) {
 
 func TestDatabase_String(t *testing.T) {
 	expected := `host=localhost port=5432 user=postgres password=postgres dbname=wallet sslmode=disable`
-	d := Database{"postgres", "postgres", "wallet", "localhost", 5432}
+	d := cfg.Database{"postgres", "postgres", "wallet", "localhost", 5432}
 	assert.Equal(t, expected, d.String())
 
 	expected = `host=localhost port=5432 user=postgres password=postgres sslmode=disable`
-	d = Database{"postgres", "postgres", "", "localhost", 5432}
+	d = cfg.Database{"postgres", "postgres", "", "localhost", 5432}
 	assert.Equal(t, expected, d.String())
 }
 
 func TestMigration_Validate(t *testing.T) {
-
 	tests := []struct {
 		name    string
-		m       Migration
+		m       cfg.Migration
 		wantErr bool
 	}{
-		{"correct", Migration{true, "../../scripts"}, false},
-		{"correct", Migration{false, ""}, false},
-		{"invalid", Migration{true, "../../mgrtn/"}, true},
-		{"invalid", Migration{true, ""}, true},
+		{"correct", cfg.Migration{true, "../../scripts"}, false},
+		{"correct", cfg.Migration{false, ""}, false},
+		{"invalid", cfg.Migration{true, "../../mgrtn/"}, true},
+		{"invalid", cfg.Migration{true, ""}, true},
 	}
+
 	for _, tt := range tests {
 		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
@@ -69,36 +70,43 @@ func TestMigration_Validate(t *testing.T) {
 func TestConfig_Validate(t *testing.T) {
 	tests := []struct {
 		name    string
-		config  Config
+		config  cfg.Config
 		wantErr bool
 	}{
-		{"correct",
-			Config{
-				Database{"postgres", "postgres", "wallet", "localhost", 5432},
-				Migration{true, "../../scripts"},
-				Logger{},
-				Web{},
+		{
+			"correct",
+			cfg.Config{
+				cfg.Database{"postgres", "postgres", "wallet", "localhost", 5432},
+				cfg.Migration{true, "../../scripts"},
+				cfg.Logger{},
+				cfg.Web{},
 			},
-			false},
+			false,
+		},
 
-		{"invalid",
-			Config{
-				Database{"", "", "", "", 0},
-				Migration{true, "../../scripts"},
-				Logger{},
-				Web{},
+		{
+			"invalid",
+			cfg.Config{
+				cfg.Database{"", "", "", "", 0},
+				cfg.Migration{true, "../../scripts"},
+				cfg.Logger{},
+				cfg.Web{},
 			},
-			true},
+			true,
+		},
 
-		{"invalid",
-			Config{
-				Database{"postgres", "postgres", "wallet", "localhost", 5432},
-				Migration{true, "../../mgrtn/"},
-				Logger{},
-				Web{},
+		{
+			"invalid",
+			cfg.Config{
+				cfg.Database{"postgres", "postgres", "wallet", "localhost", 5432},
+				cfg.Migration{true, "../../mgrtn/"},
+				cfg.Logger{},
+				cfg.Web{},
 			},
-			true},
+			true,
+		},
 	}
+
 	for _, tt := range tests {
 		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
@@ -115,6 +123,6 @@ func TestConfig_Validate(t *testing.T) {
 
 func TestDatabase_URI(t *testing.T) {
 	expected := `postgres://postgres:postgres@localhost:5432/wallet?sslmode=disable`
-	d := Database{"postgres", "postgres", "wallet", "localhost", 5432}
+	d := cfg.Database{"postgres", "postgres", "wallet", "localhost", 5432}
 	assert.Equal(t, expected, d.URI())
 }

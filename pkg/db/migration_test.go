@@ -33,7 +33,6 @@ func TestMigration_Up(t *testing.T) {
 	assert.NoError(t, m.Up())
 
 	assert.NoError(t, migrationdb.Close())
-
 }
 
 func TestMigration_Down(t *testing.T) {

@@ -18,8 +18,9 @@ const (
 	sqlGetWalletByID   = `SELECT name, account FROM wallets WHERE id = ($1);`
 	sqlCreateOperation = `INSERT INTO transactions (wallet_id, operation, amount) VALUES ($1, $2, $3) RETURNING id;`
 	sqlTruncate        = `TRUNCATE transactions, wallets RESTART IDENTITY;`
-	sqlReport          = `SELECT operation, created, amount FROM public.transactions where wallet_id=($1) and operation & ($2) > 0 and created between ($3) and ($4);`
-	isolationLevel     = sql.LevelRepeatableRead
+	sqlReport          = `SELECT operation, created, amount FROM public.transactions` +
+		`where wallet_id=($1) and operation & ($2) > 0 and created between ($3) and ($4);`
+	isolationLevel = sql.LevelRepeatableRead
 )
 
 var (
@@ -215,6 +216,7 @@ func (r *PgStorage) Report(ctx context.Context, filter *model.Filter) (model.Rep
 	defer rows.Close()
 
 	var reports model.Reports
+
 	for rows.Next() {
 		var report model.Report
 		if err := rows.Scan(
@@ -224,6 +226,7 @@ func (r *PgStorage) Report(ctx context.Context, filter *model.Filter) (model.Rep
 		); err != nil {
 			return nil, err
 		}
+
 		reports = append(reports, &report)
 	}
 

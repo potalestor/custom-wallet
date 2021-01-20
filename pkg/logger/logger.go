@@ -25,6 +25,7 @@ func createLogfile() string {
 func Initialize(config *cfg.Config) {
 	if config.Logger.File {
 		logfile := createLogfile()
+
 		file, err := os.OpenFile(logfile, os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0666)
 		if err != nil {
 			log.Fatalf("Failed to open/create log file '%s'", logfile)

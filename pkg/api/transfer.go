@@ -10,10 +10,12 @@ import (
 	"github.com/potalestor/custom-wallet/pkg/model"
 )
 
+// Transfer handler.
 type Transfer struct {
 	wallet *app.Wallet
 }
 
+// NewTransfer returns new instance.
 func NewTransfer(wallet *app.Wallet) *Transfer {
 	return &Transfer{wallet: wallet}
 }
@@ -29,7 +31,7 @@ func NewTransfer(wallet *app.Wallet) *Transfer {
 // @Success 200 {array} model.Wallet
 // @Failure 400 {string} string
 // @Failure 500 {string} string
-// @Router /transfers/{src_wallet}/{dst_wallet}/{amount} [put]
+// @Router /transfers/{src_wallet}/{dst_wallet}/{amount} [put].
 func (t *Transfer) Transfer(c *gin.Context) {
 	srcWallet := c.Param("src_wallet")
 	if err := validation.Validate(srcWallet,

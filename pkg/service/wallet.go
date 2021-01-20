@@ -7,14 +7,17 @@ import (
 	"github.com/potalestor/custom-wallet/pkg/repo"
 )
 
+// Wallet service.
 type Wallet struct {
 	repository repo.Repository
 }
 
+// NewWallet returns new instance.
 func NewWallet(repository repo.Repository) *Wallet {
 	return &Wallet{repository: repository}
 }
 
+// CreateWallet use case.
 func (w *Wallet) CreateWallet(name string) (*model.Wallet, error) {
 	wallet := model.Wallet{Name: name}
 
@@ -25,6 +28,7 @@ func (w *Wallet) CreateWallet(name string) (*model.Wallet, error) {
 	return &wallet, nil
 }
 
+// Deposit use case.
 func (w *Wallet) Deposit(name string, amount model.USD) (*model.Wallet, error) {
 	if err := amount.Validate(); err != nil {
 		return nil, err

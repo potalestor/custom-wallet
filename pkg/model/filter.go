@@ -11,18 +11,21 @@ import (
 
 var (
 	ErrInvalidDataRange = errors.New("invalid data range")
-	tenYearsAgo         = -24 * 365 * 10 * time.Hour
-	tomorrow            = 24 * time.Hour
+
+	tenYearsAgo = -24 * 365 * 10 * time.Hour
+	tomorrow    = 24 * time.Hour
 )
 
 const formatFilter = `wallet=%s, operation=%v, range=%s-%s`
 
+// Filter for report.
 type Filter struct {
 	WalletName string
 	Operation  Operation
 	DateRange  [2]time.Time
 }
 
+// NewFilter returns new instance.
 func NewFilter() *Filter {
 	f := &Filter{Operation: Both}
 	f.DateRange[0] = time.Now().Add(tenYearsAgo)
@@ -31,6 +34,7 @@ func NewFilter() *Filter {
 	return f
 }
 
+// Validate returns error if filter incorrect.
 func (f Filter) Validate() error {
 	return validation.ValidateStruct(&f,
 		validation.Field(&f.WalletName, validation.Required, is.Alphanumeric),
@@ -46,7 +50,6 @@ func (f Filter) Validate() error {
 
 					return nil
 				})))
-
 }
 
 func (f *Filter) String() string {

@@ -7,14 +7,28 @@ linters-settings:
       - github.com/potalestor/custom-wallet/pkg/cfg
       - github.com/potalestor/custom-wallet/pkg/model
       - github.com/potalestor/custom-wallet/pkg/repo
+      - github.com/potalestor/custom-wallet/pkg/app
       - github.com/golang-migrate/migrate/v4/database/postgres
       - github.com/golang-migrate/migrate/v4/source/file
       - github.com/golang-migrate/migrate/v4
       - github.com/lib/pq
       - github.com/pkg/errors
       - github.com/stretchr/testify/assert
-
-
+      - github.com/potalestor/custom-wallet/pkg/api/docs
+      - github.com/gin-contrib/pprof
+      - github.com/gin-gonic/gin/binding
+      - github.com/go-ozzo/ozzo-validation/v4
+      - github.com/gin-gonic/gin
+      - github.com/swaggo/files
+      - github.com/swaggo/gin-swagger
+      - github.com/potalestor/custom-wallet/pkg/service
+      - github.com/potalestor/custom-wallet/pkg/api
+      - github.com/potalestor/custom-wallet/pkg/db
+      - github.com/potalestor/custom-wallet/pkg/logger
+      - github.com/spf13/cobra
 linters:
   enable-all: true
   disable:
+    - gochecknoglobals
+    - gci
+

@@ -16,6 +16,8 @@ const (
 
 func (o Operation) String() string {
 	switch o {
+	case Unsupported:
+		return "Unsupported"
 	case Deposit:
 		return "Deposit"
 	case Withdraw:

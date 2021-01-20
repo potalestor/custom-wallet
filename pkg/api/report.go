@@ -9,10 +9,12 @@ import (
 	"github.com/potalestor/custom-wallet/pkg/model"
 )
 
+// Report handler.
 type Report struct {
 	wallet *app.Wallet
 }
 
+// NewReport returns new instance.
 func NewReport(wallet *app.Wallet) *Report {
 	return &Report{wallet: wallet}
 }
@@ -27,7 +29,7 @@ func NewReport(wallet *app.Wallet) *Report {
 // @Success 200 {string} string
 // @Failure 400 {string} string
 // @Failure 500 {string} string
-// @Router /reports [put]
+// @Router /reports [put].
 func (r *Report) Report(c *gin.Context) {
 	var filter model.Filter
 

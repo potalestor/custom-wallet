@@ -10,7 +10,6 @@ import (
 
 const (
 	formatConnectionDB = `host=%s port=%d user=%s password=%s dbname=%s sslmode=disable`
-	formatConnection   = `host=%s port=%d user=%s password=%s sslmode=disable`
 
 	formatURI = `postgres://%s:%s@%s:%d/%s?sslmode=disable`
 )
@@ -66,14 +65,6 @@ func (d Database) URI() string {
 }
 
 func (d Database) String() string {
-	if d.DB == "" {
-		return fmt.Sprintf(formatConnection,
-			d.Host,
-			d.Port,
-			d.User,
-			d.Password,
-		)
-	}
 	return fmt.Sprintf(formatConnectionDB,
 		d.Host,
 		d.Port,
