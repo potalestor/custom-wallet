@@ -1,0 +1,80 @@
+@startuml
+namespace app {
+    class Wallet << (S,Aquamarine) >> {
+        + Wallet *service.Wallet
+        + Transfer *service.Transfer
+        + Report *service.Report
+
+    }
+}
+namespace service {
+    class Report << (S,Aquamarine) >> {
+        - repository repo.Repository
+
+        + Report(filter *model.Filter) (model.Reports, error)
+
+    }
+    class Transfer << (S,Aquamarine) >> {
+        - repository repo.Repository
+
+        + Transfer(src string, dst string, amount model.USD) ([]*model.Wallet, error)
+
+    }
+    class Wallet << (S,Aquamarine) >> {
+        - repository repo.Repository
+
+        + CreateWallet(name string) (*model.Wallet, error)
+        + Deposit(name string, amount model.USD) (*model.Wallet, error)
+    }
+}
+
+namespace repo {
+    class PgStorage << (S,Aquamarine) >> {
+        - config *cfg.Config
+
+        + Open() error
+        + Close() error
+        + Clear(ctx context.Context) error
+        + CreateWallet(ctx context.Context, wallet *model.Wallet) error
+        + GetWalletByID(ctx context.Context, wallet *model.Wallet) error
+        + GetWalletByName(ctx context.Context, wallet *model.Wallet) error
+        + Transfer(ctx context.Context, src *model.Wallet, dst *model.Wallet, amount model.USD) error
+        + Deposit(ctx context.Context, wallet *model.Wallet, amount model.USD) error
+        + Report(ctx context.Context, filter *model.Filter) (model.Reports, error)
+
+    }
+    interface Repository  {
+        + Open() error
+        + Close() error
+        + CreateWallet(ctx context.Context, wallet *model.Wallet) error
+        + GetWalletByName(ctx context.Context, wallet *model.Wallet) error
+        + Deposit(ctx context.Context, wallet *model.Wallet, amount model.USD) error
+        + Transfer(ctx context.Context, src *model.Wallet, dst *model.Wallet, amount model.USD) error
+        + Report(ctx context.Context, filter *model.Filter) (model.Reports, error)
+    }
+}
+
+namespace cfg {
+    class Config << (S,Aquamarine) >> {
+        + Database Database
+        + Migration Migration
+        + Logger Logger
+        + Web Web
+
+        + Validate() error
+
+    }
+}
+
+"repo.Repository" <|-- "repo.PgStorage"
+"repo.PgStorage" -left-o "cfg.Config"
+
+"app.Wallet" --* "service.Wallet"
+"app.Wallet" --* "service.Transfer"
+"app.Wallet" --* "service.Report"
+
+"service.Wallet"   --o "repo.Repository"
+"service.Transfer" --o "repo.Repository"
+"service.Report"   --o "repo.Repository"
+
+@enduml

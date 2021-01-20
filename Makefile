@@ -22,6 +22,10 @@ SWAG_FLAGS = --parseInternal=true --parseDependency=true
 
 all: test build
 
+godoc:
+	@echo "Run  godoc"
+	godoc -http=:6060  -goroot=$(HOME)/go
+
 test:
 	@echo "Run tests $(APPNAME)"
 	$(GOTEST) ./pkg/... -v

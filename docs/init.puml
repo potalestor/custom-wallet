@@ -1,0 +1,14 @@
+@startuml
+
+(*) -->[command line args] "parse flags"
+"parse flags" --> [create] "Config"
+"Config" --> [initialize] "Logger"
+"Logger" --> [createDB & migration] "PostgresDB"
+"PostgresDB" --> [fatal error] (*)
+"PostgresDB" --> [create] "Repository"
+"Repository" --> [fatal error] (*)
+"Repository" --> [create] "Wallet"
+"Wallet" --> [create] "Web-service"
+"Web-service" --> (*)
+
+@enduml

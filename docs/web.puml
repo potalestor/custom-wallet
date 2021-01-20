@@ -1,0 +1,56 @@
+@startuml
+namespace api {
+    class API << (S,Aquamarine) >> {
+        + Wallet *Wallet
+        + Transfer *Transfer
+        + Report *Report
+
+        + Build() *gin.Engine
+
+    }
+    class Graceful << (S,Aquamarine) >> {
+        - handler http.Handler
+
+        + Run(addr ...string) error
+
+    }
+    class Report << (S,Aquamarine) >> {
+        - wallet *app.Wallet
+
+        + Report(c *gin.Context) 
+
+    }
+    class Transfer << (S,Aquamarine) >> {
+        - wallet *app.Wallet
+
+        + Transfer(c *gin.Context) 
+
+    }
+    class Wallet << (S,Aquamarine) >> {
+        - wallet *app.Wallet
+
+        + Create(c *gin.Context) 
+        + Deposit(c *gin.Context) 
+
+    }
+}
+
+namespace app {
+    class Wallet << (S,Aquamarine) >> {
+        + Wallet *service.Wallet
+        + Transfer *service.Transfer
+        + Report *service.Report
+
+    }
+}
+
+"api.Graceful" --* "api.API"
+"api.API" --* "api.Wallet"
+"api.API" --* "api.Transfer"
+"api.API" --* "api.Report"
+
+"api.Wallet" --o "app.Wallet"
+"api.Transfer" --o "app.Wallet"
+"api.Report" --o "app.Wallet"
+
+@enduml
