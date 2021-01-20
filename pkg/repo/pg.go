@@ -11,22 +11,18 @@ import (
 )
 
 const (
-	sqlDriver = `postgres`
-
-	sqlCreateTestDB = `CREATE DATABASE `
-
+	sqlDriver          = `postgres`
 	sqlCreateWallet    = `INSERT INTO wallets (name) VALUES ($1) RETURNING id;`
 	sqlChangeAccount   = `UPDATE wallets SET account = account + ($1) WHERE id = ($2) RETURNING account;`
 	sqlGetWalletByName = `SELECT id, account FROM wallets WHERE name = ($1);`
 	sqlGetWalletByID   = `SELECT name, account FROM wallets WHERE id = ($1);`
 	sqlCreateOperation = `INSERT INTO transactions (wallet_id, operation, amount) VALUES ($1, $2, $3) RETURNING id;`
 	sqlTruncate        = `TRUNCATE transactions, wallets RESTART IDENTITY;`
-
-	isolationLevel = sql.LevelRepeatableRead
+	sqlReport          = `SELECT operation, created, amount FROM public.transactions where wallet_id=($1) and operation & ($2) > 0 and created between ($3) and ($4);`
+	isolationLevel     = sql.LevelRepeatableRead
 )
 
 var (
-	ErrDatabaseNotExist   = errors.New(`database does not exist`)
 	ErrWalletExists       = errors.New(`wallet already exists`)
 	ErrWalletNotExist     = errors.New(`wallet does not exist`)
 	ErrZeroAccount        = errors.New(`the amount on the account can't be less than zero`)
@@ -53,15 +49,6 @@ func (r *PgStorage) Open() error {
 	}
 
 	if err := db.Ping(); err != nil {
-		pgErr, ok := err.(*pq.Error)
-		if ok && pgErr.Code == pq.ErrorCode("3D000") {
-			if e := r.createDB(); e != nil {
-				return errors.Wrap(ErrDatabaseNotExist, pgErr.Message)
-			}
-
-			return r.Open()
-		}
-
 		return err
 	}
 
@@ -132,7 +119,7 @@ func (r *PgStorage) Transfer(ctx context.Context, src, dst *model.Wallet, amount
 	}
 
 	op2 := &model.Transaction{
-		Wallet:    src.ID,
+		Wallet:    dst.ID,
 		Operation: model.Deposit,
 		Amount:    amount,
 	}
@@ -181,7 +168,7 @@ func (r *PgStorage) Transfer(ctx context.Context, src, dst *model.Wallet, amount
 func (r *PgStorage) Deposit(ctx context.Context, wallet *model.Wallet, amount model.USD) error {
 	op := &model.Transaction{
 		Wallet:    wallet.ID,
-		Operation: model.Withdraw,
+		Operation: model.Deposit,
 		Amount:    amount,
 	}
 
@@ -207,6 +194,45 @@ func (r *PgStorage) Deposit(ctx context.Context, wallet *model.Wallet, amount mo
 	}
 
 	return tx.Commit()
+}
+
+// Report wallet.
+func (r *PgStorage) Report(ctx context.Context, filter *model.Filter) (model.Reports, error) {
+	wallet := &model.Wallet{Name: filter.WalletName}
+
+	if err := r.GetWalletByName(ctx, wallet); err != nil {
+		return nil, err
+	}
+
+	rows, err := r.db.QueryContext(ctx, sqlReport,
+		wallet.ID,
+		filter.Operation,
+		filter.DateRange[0], filter.DateRange[1],
+	)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var reports model.Reports
+	for rows.Next() {
+		var report model.Report
+		if err := rows.Scan(
+			&report.Operation,
+			&report.Created,
+			&report.Amount,
+		); err != nil {
+			return nil, err
+		}
+		reports = append(reports, &report)
+	}
+
+	rerr := rows.Close()
+	if rerr != nil {
+		return reports, err
+	}
+
+	return reports, rows.Err()
 }
 
 func (r *PgStorage) changeAccount(ctx context.Context, tx *sql.Tx, wallet *model.Wallet, amount model.USD) error {
@@ -241,26 +267,4 @@ func (r *PgStorage) createOperation(ctx context.Context, tx *sql.Tx, transaction
 	}
 
 	return err
-}
-
-func (r *PgStorage) createDB() error {
-	name := r.config.Database.DB
-	r.config.Database.DB = ""
-
-	temp := NewPgStorage(r.config)
-	if err := temp.Open(); err != nil {
-		return err
-	}
-
-	defer temp.Close()
-
-	if _, err := temp.db.Exec(sqlCreateTestDB + name); err != nil {
-		return err
-	}
-
-	r.config.Database.DB = name
-
-	mg := NewMigration(r.config)
-
-	return mg.Up()
 }

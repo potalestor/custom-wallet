@@ -8,6 +8,7 @@ import (
 	"github.com/potalestor/custom-wallet/pkg/api"
 	"github.com/potalestor/custom-wallet/pkg/app"
 	"github.com/potalestor/custom-wallet/pkg/cfg"
+	"github.com/potalestor/custom-wallet/pkg/db"
 	"github.com/potalestor/custom-wallet/pkg/logger"
 	"github.com/potalestor/custom-wallet/pkg/repo"
 	"github.com/spf13/cobra"
@@ -26,6 +27,19 @@ var (
 			}
 
 			logger.Initialize(&config)
+
+			log.Println("initialize migration")
+			{
+				migrationdb := db.NewPostgresDB(&config)
+				if err := migrationdb.Open(); err != nil {
+					log.Fatalf("migration does not initialize: %v\n%+v", err, config)
+				}
+				defer migrationdb.Close()
+
+				if err := migrationdb.Migrate(); err != nil {
+					log.Fatalf("migration does not perform: %v\n%+v", err, config)
+				}
+			}
 
 			log.Println("initialize repository")
 			repository := repo.NewPgStorage(&config)
@@ -54,7 +68,7 @@ func main() {
 	rootCmd.PersistentFlags().StringVarP(&config.Database.Password, "pass", "p", "postgres", "DB password")
 	rootCmd.PersistentFlags().StringVarP(&config.Database.Host, "host", "s", "localhost", "DB address")
 	rootCmd.PersistentFlags().IntVarP(&config.Database.Port, "port", "o", 5432, "DB port")
-	rootCmd.PersistentFlags().StringVarP(&config.Migration.Path, "mpath", "m", "../../migration/", "Migration path scripts")
+	rootCmd.PersistentFlags().StringVarP(&config.Migration.Path, "mpath", "m", "../../scripts/", "Migration path scripts")
 	rootCmd.PersistentFlags().BoolVarP(&config.Migration.Enabled, "mon", "n", true, "Migration enabled")
 	rootCmd.PersistentFlags().BoolVarP(&config.Logger.File, "log", "l", false, "Default log to Console")
 	rootCmd.PersistentFlags().StringVarP(&config.Web.Adddress, "addr", "a", ":8080", "WEB-address")

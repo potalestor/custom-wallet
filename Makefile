@@ -40,16 +40,20 @@ swag:
 
 run: 
 	@echo "Run application $(APPNAME)"
-	$(APPPATH)/$(APPNAME)
+	$(APPPATH)/$(APPNAME) --mpath=./scripts
+
+docker: 
+	@echo "Run PostgresSQL server"
+	docker-compose up --build
 
 depend:
-	godoc
+	# godoc
 	@echo "Get and install godoc"
 	$(GOGET) -u golang.org/x/tools/cmd/godoc
-	swag
+	# swag
 	@echo "Get and install swag"
 	$(GOGET) -u github.com/swaggo/swag/cmd/swag
-	gin-swagger
+	# gin-swagger
 	@echo "Get and install gin-swagger"
 	$(GOGET) -u github.com/swaggo/gin-swagger
 	$(GOGET) -u github.com/swaggo/files

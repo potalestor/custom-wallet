@@ -47,7 +47,7 @@ func TestMigration_Validate(t *testing.T) {
 		m       Migration
 		wantErr bool
 	}{
-		{"correct", Migration{true, "../../migration"}, false},
+		{"correct", Migration{true, "../../scripts"}, false},
 		{"correct", Migration{false, ""}, false},
 		{"invalid", Migration{true, "../../mgrtn/"}, true},
 		{"invalid", Migration{true, ""}, true},
@@ -75,7 +75,7 @@ func TestConfig_Validate(t *testing.T) {
 		{"correct",
 			Config{
 				Database{"postgres", "postgres", "wallet", "localhost", 5432},
-				Migration{true, "../../migration"},
+				Migration{true, "../../scripts"},
 				Logger{},
 				Web{},
 			},
@@ -84,7 +84,7 @@ func TestConfig_Validate(t *testing.T) {
 		{"invalid",
 			Config{
 				Database{"", "", "", "", 0},
-				Migration{true, "../../migration"},
+				Migration{true, "../../scripts"},
 				Logger{},
 				Web{},
 			},

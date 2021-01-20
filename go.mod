@@ -13,11 +13,10 @@ require (
 	github.com/golang-migrate/migrate/v4 v4.14.1
 	github.com/lib/pq v1.9.0
 	github.com/pkg/errors v0.9.1
-	github.com/potalestor/go-app v0.0.0-20201207174637-e67759cd42d5 // indirect
 	github.com/spf13/cobra v1.1.1
-	github.com/stretchr/testify v1.6.1
+	github.com/stretchr/testify v1.7.0
 	github.com/swaggo/files v0.0.0-20190704085106-630677cd5c14
 	github.com/swaggo/gin-swagger v1.3.0
-	github.com/swaggo/swag v1.5.1
-	gopkg.in/yaml.v3 v3.0.0-20200605160147-a5ece683394c // indirect
+	github.com/swaggo/swag v1.7.0
+	gopkg.in/yaml.v3 v3.0.0-20210107192922-496545a6307b // indirect
 )

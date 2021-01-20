@@ -2,9 +2,12 @@ package repo_test
 
 import (
 	"context"
+	"log"
+	"os"
 	"testing"
 
 	"github.com/potalestor/custom-wallet/pkg/cfg"
+	"github.com/potalestor/custom-wallet/pkg/db"
 	"github.com/potalestor/custom-wallet/pkg/model"
 	"github.com/potalestor/custom-wallet/pkg/repo"
 	"github.com/stretchr/testify/assert"
@@ -21,8 +24,21 @@ var config = &cfg.Config{
 
 	Migration: cfg.Migration{
 		Enabled: true,
-		Path:    "../../migration",
+		Path:    "../../scripts",
 	},
+}
+
+func TestMain(m *testing.M) {
+	migrationdb := db.NewPostgresDB(config)
+	if err := migrationdb.Open(); err != nil {
+		log.Fatalf("migration does not initialize: %v\n%+v", err, config)
+	}
+	defer migrationdb.Close()
+
+	if err := migrationdb.Migrate(); err != nil {
+		log.Fatalf("migration does not perform: %v\n%+v", err, config)
+	}
+	os.Exit(m.Run())
 }
 
 func TestPgStorage_Deposit(t *testing.T) {
@@ -153,4 +169,25 @@ func TestPgStorage_CreateWallet(t *testing.T) {
 			assert.NoError(t, storage.CreateWallet(ctx, tt.wallet))
 		})
 	}
+}
+
+func TestPgStorage_Report(t *testing.T) {
+	ctx := context.Background()
+
+	storage := repo.NewPgStorage(config)
+	if err := storage.Open(); err != nil {
+		t.Fatal(err)
+	}
+
+	defer func() {
+		assert.NoError(t, storage.Clear(ctx))
+		assert.NoError(t, storage.Close())
+	}()
+
+	f := model.NewFilter()
+	f.WalletName = "w1"
+
+	_, err := storage.Report(ctx, f)
+
+	assert.Error(t, err)
 }

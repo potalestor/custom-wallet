@@ -19,14 +19,59 @@ var doc = `{
         "description": "{{.Description}}",
         "title": "{{.Title}}",
         "contact": {
-            "name": "@potalestor",
-            "email": "potalestor@gmail.com"
+            "name": "potalestor@gmail.com"
         },
         "version": "{{.Version}}"
     },
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/reports": {
+            "put": {
+                "description": "Report on the wallet. Using Filter. Operation: 1-Deposit, 2-Withdraw, 3-Both. Date range using RFC3339.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "reports"
+                ],
+                "summary": "Report on the wallet.",
+                "parameters": [
+                    {
+                        "description": "Create Filter",
+                        "name": "filter",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.Filter"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
         "/transfers/{src_wallet}/{dst_wallet}/{amount}": {
             "put": {
                 "description": "Transfer money from one wallet to another.",
@@ -176,6 +221,23 @@ var doc = `{
         }
     },
     "definitions": {
+        "model.Filter": {
+            "type": "object",
+            "properties": {
+                "dateRange": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "operation": {
+                    "type": "integer"
+                },
+                "walletName": {
+                    "type": "string"
+                }
+            }
+        },
         "model.Wallet": {
             "type": "object",
             "properties": {

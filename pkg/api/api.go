@@ -43,7 +43,8 @@ func (a *API) Build() *gin.Engine {
 	v1 := r.Group("/api/v1")
 
 	a.buildWalletApi(v1.Group("/wallets")).
-		buildTransferApi(v1.Group("/transfers")) //.
+		buildTransferApi(v1.Group("/transfers")).
+		buildReportApi(v1.Group("/reports"))
 
 	return r
 }
@@ -57,6 +58,12 @@ func (a *API) buildWalletApi(r *gin.RouterGroup) *API {
 
 func (a *API) buildTransferApi(r *gin.RouterGroup) *API {
 	r.PUT("/:src_wallet/:dst_wallet/:amount", a.Transfer.Transfer)
+
+	return a
+}
+
+func (a *API) buildReportApi(r *gin.RouterGroup) *API {
+	r.PUT("/", a.Report.Report)
 
 	return a
 }

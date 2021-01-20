@@ -14,4 +14,5 @@ type Repository interface {
 	GetWalletByName(ctx context.Context, wallet *model.Wallet) error
 	Deposit(ctx context.Context, wallet *model.Wallet, amount model.USD) error
 	Transfer(ctx context.Context, src, dst *model.Wallet, amount model.USD) error
+	Report(ctx context.Context, filter *model.Filter) (model.Reports, error)
 }

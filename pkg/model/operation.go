@@ -10,4 +10,19 @@ const (
 	Deposit
 	// Withdraw money.
 	Withdraw
+	// Both.
+	Both
 )
+
+func (o Operation) String() string {
+	switch o {
+	case Deposit:
+		return "Deposit"
+	case Withdraw:
+		return "Withdraw"
+	case Both:
+		return "Both"
+	default:
+		return "Unsupported"
+	}
+}

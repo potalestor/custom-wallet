@@ -1,5 +1,16 @@
 basePath: /api/v1
 definitions:
+  model.Filter:
+    properties:
+      dateRange:
+        items:
+          type: string
+        type: array
+      operation:
+        type: integer
+      walletName:
+        type: string
+    type: object
   model.Wallet:
     properties:
       account:
@@ -11,12 +22,42 @@ definitions:
     type: object
 info:
   contact:
-    email: potalestor@gmail.com
-    name: '@potalestor'
+    name: potalestor@gmail.com
   description: Swagger API for Golang Project CUSTOM-WALLET.
   title: CUSTOM-WALLET REST API
   version: 0.0.1
 paths:
+  /reports:
+    put:
+      consumes:
+      - application/json
+      description: 'Report on the wallet. Using Filter. Operation: 1-Deposit, 2-Withdraw,
+        3-Both. Date range using RFC3339.'
+      parameters:
+      - description: Create Filter
+        in: body
+        name: filter
+        required: true
+        schema:
+          $ref: '#/definitions/model.Filter'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: Report on the wallet.
+      tags:
+      - reports
   /transfers/{src_wallet}/{dst_wallet}/{amount}:
     put:
       description: Transfer money from one wallet to another.

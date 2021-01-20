@@ -42,7 +42,7 @@ func (t *Transfer) Transfer(c *gin.Context) {
 	}
 
 	dstWallet := c.Param("dst_wallet")
-	if err := validation.Validate(srcWallet,
+	if err := validation.Validate(dstWallet,
 		validation.Required,
 		is.Alphanumeric,
 	); err != nil {
