@@ -42,7 +42,7 @@ func (w *Wallet) Deposit(name string, amount model.USD) (*model.Wallet, error) {
 		return nil, err
 	}
 
-	if err := w.repository.Deposit(context.Background(), &wallet, amount); err != nil {
+	if err := w.repository.Deposit(ctx, &wallet, amount); err != nil {
 		return nil, err
 	}
 
