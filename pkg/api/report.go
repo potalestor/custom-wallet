@@ -35,13 +35,13 @@ func (r *Report) Report(c *gin.Context) {
 
 	if err := c.ShouldBindBodyWith(&filter, binding.JSON); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		
+
 		return
 	}
 
 	if err := filter.Validate(); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		
+
 		return
 	}
 
